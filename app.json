@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "CPA153",
+    "slug": "CPA153",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
