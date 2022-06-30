@@ -1,3 +1,8 @@
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, SafeAreaView} from 'react-native';
+import Info_list from "./components/Info_list"
+
 const Bio = () => {
 <View style={styles.container}>
     <View style = {styles.title_badge}>
