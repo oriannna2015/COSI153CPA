@@ -3,19 +3,19 @@ import { Button, Text, View, StyleSheet, ScrollView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {useValue} from './ValueContext';
+
 
 import ProfileScreen from './Profile';
 import MealSearch from './meals';
 import ShoppingList from './ShoppingList';
+import Registration from './Registration'
 
 // access the profile info from this page ...
 function HomeScreen({ navigation }) {
-    const {currentValue} = useValue();
   return (
     <ScrollView style = {styles.wordbox}>
     <View style = {styles.title_badge}>
-      <Text style = {{fontSize: 24, fontWeight: 'bold'}} > Welcome Back! {currentValue.name} !</Text>
+      <Text style = {{fontSize: 24, fontWeight: 'bold'}} > Welcome Back!!</Text>
     </View>
     <View style = {styles.container}>
     <Button
@@ -98,6 +98,10 @@ export default function App() {
             headerShown: false
         }}/>
         <Tab.Screen name="Profile" component={ProfileScreen} 
+        options={{
+            headerShown: true
+        }}/>
+        <Tab.Screen name="Register" component= {Registration} 
         options={{
             headerShown: true
         }}/>

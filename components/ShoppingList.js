@@ -3,6 +3,7 @@ import React, { useState, useEffect }  from 'react';
 import { View, Button,FlatList, StyleSheet,Text, TextInput,ScrollView,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {useValue} from './ValueStorageContext';
 
 const ShoppingList = () => {
     const [list,setList] = useState([]);
@@ -10,39 +11,33 @@ const ShoppingList = () => {
 
     useEffect(() => {getData()},[])
 
-    const getData = async () => {
-        try {
-          // the '@profile_info' can be any string
-          const jsonValue = await AsyncStorage.getItem('@shoppinglist')
-          let data = null
-          if (jsonValue!=null) {
-            data = JSON.parse(jsonValue)
-            setList(data)
-            console.log('just read existing list')
-          } else {
-            console.log('just read a null value from Storage')
-            setList([])
-            setItem("")
-          }
-        } catch(e) {
-          console.log("error in getData ")
+    const getList = async () => {
+      try{
+          let userid = currentValue.userid
+          let result = await Axios.post(appURL+'/shopping', {userid:userid})
+          let list = result.data
+        await AsyncStorage.setItem(
+          '@List',
+          JSON.stringify({...currentValue,list}))
+          setList(list)
+        }catch(e){
+          console.log('error'+e)
           console.dir(e)
-        }
-  }
 
-  const storeData = async (value) => {
-        try {
-          const jsonValue = JSON.stringify(value)
-          await AsyncStorage.setItem('@shoppinglist', jsonValue)
-          console.log('just stored '+jsonValue)
-        } catch (e) {
-          console.log("error in storeData ")
-          console.dir(e)
-          // saving error
         }
-  }
+    }
 
-  
+    const newItem = async (item) => {
+      let userid = currentValue.userid
+      const url = currentValue.appURL
+      const response = 
+      await Axios.post(url+"/cloud/addlist",
+                          {item:item,
+                            id:userid
+                          });
+      console.dir(response.data);
+    }
+    
   const clearAll = async () => {
         try {
           console.log('in clearData')
@@ -81,6 +76,7 @@ const ShoppingList = () => {
 return(
 
     <ScrollView style = {styles.container}>
+        {getList()}
         <Text style = {{fontSize:30,fontWeight:'bold', alignSelf: 'center'}}>ShoppingList</Text>
         <Text style = {{alignSelf: 'center'}}> Add items for next shopping</Text>
         <View style = {styles.wordbox}>
@@ -97,10 +93,8 @@ return(
                 color = '#628FA6'
                 onPress = {() => 
                 {
-                    const newItem =
-                        list.concat({'Item':Item,})
-                        setList(newItem)
-                        storeData(newItem)
+                        newItem(Item)
+                        getList()
                         setItem("")
                 }}
                 />

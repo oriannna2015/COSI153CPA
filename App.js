@@ -4,10 +4,9 @@ import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, SafeAreaVie
 import Info_list from "./components/Info_list"
 
 import Stack from './components/ListStackwithContext';
-import Demo from './components/AsyncContextDemo';
 
 
-export default Demo;
+export default Stack;
 
 //import BMI from './components/bmi'
 /**

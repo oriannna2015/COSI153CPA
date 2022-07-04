@@ -6,7 +6,7 @@
 
 import React,{useState} from 'react';
 import {View,Text,TextInput,Button, StyleSheet, ScrollView} from 'react-native';
-import {useValue} from './ValueContext';
+import {useValue} from './ValueStorageContext';
 
 const Profile = () => {
     const {currentValue,setCurrentValue} = useValue();
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Profile
+export default Profile;
