@@ -3,27 +3,40 @@ import { Button, Text, View, StyleSheet, ScrollView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+import {useValue} from './ValueStorageContext';
+import { Avatar } from 'react-native-elements';
 
 import ProfileScreen from './Profile';
 import MealSearch from './meals';
 import ShoppingList from './ShoppingList';
-import Registration from './Registration'
+import Reminders from './Reminders';
+import money from './money';
 
 // access the profile info from this page ...
 function HomeScreen({ navigation }) {
+  const {currentValue,setCurrentValue} = useValue();
   return (
     <ScrollView style = {styles.wordbox}>
-    <View style = {styles.title_badge}>
-      <Text style = {{fontSize: 24, fontWeight: 'bold'}} > Welcome Back!!</Text>
-    </View>
-    <View style = {styles.container}>
-    <Button
-        title="Edit Profile"
-        color = 'rgb(21, 52, 80)'
-        onPress={() => navigation.navigate('Profile')}
-      />
-    </View>
+      <View style = {styles.title_badge}>
+        <Text style = {{fontSize: 24, fontWeight: 'bold'}} > Welcome Back, {currentValue.name}!</Text>
+      </View>
+      <View style = {{ paddingTop:10,paddingBottom:10, alignSelf: 'stretch', alignItems: 'center'}}>
+        <Avatar 
+          size = "xlarge"
+          rounded
+          source={{
+            uri:
+            currentValue.avatar,
+          }}
+        />
+      </View>
+      <View style = {styles.container}>
+        <Button
+            title="Edit Profile"
+            color = 'rgb(21, 52, 80)'
+            onPress={() => navigation.navigate('Profile')}
+          />
+      </View>
   </ScrollView>
   );
 }
@@ -48,6 +61,22 @@ function ServiceScreen({ navigation }) {
         backgroundColor = "floralwhite"
         color = 'rgb(21, 52, 80)'
         onPress={() => navigation.navigate('ShoppingList')}
+      />
+    </View>
+    <View style = {styles.container}>
+      <Button
+        title="Reminders"
+        backgroundColor = "floralwhite"
+        color = 'rgb(21, 52, 80)'
+        onPress={() => navigation.navigate('Reminders')}
+      />
+    </View>
+    <View style = {styles.container}>
+      <Button
+        title="money"
+        backgroundColor = "floralwhite"
+        color = 'rgb(21, 52, 80)'
+        onPress={() => navigation.navigate('money')}
       />
     </View>
   </ScrollView>
@@ -78,7 +107,10 @@ function ServiceStackScreen() {
       />
       <ServiceStack.Screen name="ShoppingList" component={ShoppingList} 
       />
-      
+      <ServiceStack.Screen name="Reminders" component={Reminders} 
+      />
+      <ServiceStack.Screen name="money" component={money} 
+      />
     </ServiceStack.Navigator>
   );
 }
@@ -98,10 +130,6 @@ export default function App() {
             headerShown: false
         }}/>
         <Tab.Screen name="Profile" component={ProfileScreen} 
-        options={{
-            headerShown: true
-        }}/>
-        <Tab.Screen name="Register" component= {Registration} 
         options={{
             headerShown: true
         }}/>

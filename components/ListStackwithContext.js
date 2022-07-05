@@ -15,16 +15,11 @@ const Tab = createBottomTabNavigator();
 
 const App = () => {
   const data =
-    {username:"none",
-     profilename:"",
-     appURL: 'https://fathomless-shelf-49222.herokuapp.com',
-     userid: "",
-     avatar:"",
-     userdata:null,
-   }
+    {name:"none",
+     avatar:"https://media.istockphoto.com/vectors/cute-ghost-icon-silhouette-vector-id859891056?k=6&m=859891056&s=612x612&w=0&h=2_phi-weg0t0lJYULtwsaLBbQe8U57GaeVRKyqSO5Hw=",}
 
   return (
-    <ValueProvider value={data}>
+    <ValueProvider value={data} tag = "@userinfo">
         <ListStack />
     </ValueProvider>
   )

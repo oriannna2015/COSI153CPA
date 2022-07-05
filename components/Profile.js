@@ -10,19 +10,19 @@ import {useValue} from './ValueStorageContext';
 
 const Profile = () => {
     const {currentValue,setCurrentValue} = useValue();
-    const [name,setName] = useState("?");
-    const [email,setEmail] = useState("?@none.com");
+    const [name,setName] = useState("Someone");
+    const [avatar,setAvatar] = useState("https://media.istockphoto.com/vectors/cute-ghost-icon-silhouette-vector-id859891056?k=6&m=859891056&s=612x612&w=0&h=2_phi-weg0t0lJYULtwsaLBbQe8U57GaeVRKyqSO5Hw=");
     
 
     return (
       <ScrollView style = {styles.wordbox}>
         <View style = {styles.title_badge}>
           <Text style = {{fontSize: 24, fontWeight: 'bold'}} > Login as:</Text>
-          <Text style = {{fontSize: 18, fontWeight: 'bold'}} > {name}/{email}</Text>
+          <Text style = {{fontSize: 18, fontWeight: 'bold'}} > {name}</Text>
         </View>
         <View style = {styles.container}>
           <View style={{flexDirection: 'column', alignSelf: 'stretch'}}>
-              <Text style = {styles.title_name}> Enter your name: </Text>
+              <Text style = {styles.title_name}> What you can to be called? </Text>
               <TextInput
                 style={styles.input}
                 placeholder="name"
@@ -31,11 +31,11 @@ const Profile = () => {
               />
           </View>
           <View style={{flexDirection: 'columnw', alignSelf: 'stretch'}}>
-          <Text style = {styles.title_name}> Enter your email: </Text>
+          <Text style = {styles.title_name}> Set your homepage avatar: </Text>
           <TextInput
             style={styles.input}
-            placeholder="email"
-            onChangeText={newText => setEmail(newText)}
+            placeholder="image link"
+            onChangeText={newText => setAvatar(newText)}
             defaultValue={""}
           />
             </View>
@@ -44,7 +44,7 @@ const Profile = () => {
               title="Save profile info"
               Color="#f194ff"
               onPress = {() => {
-              setCurrentValue({name,email});
+                setCurrentValue({name,avatar});
               }}
               />
       </ScrollView>
