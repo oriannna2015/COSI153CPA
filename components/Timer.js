@@ -47,7 +47,7 @@ const Timer = () => {
                         onChangeText={newText => setselectedMinutes(newText)}
                         defaultValue={0}
                     />
-                                    <TextInput
+                    <TextInput
                         style={styles.input}
                         placeholder="0s"
                         onChangeText={newText => setselectedSeconds(newText)}

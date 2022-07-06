@@ -1,11 +1,17 @@
-import * as React from 'react';
-import { Button, Text, View, StyleSheet, ScrollView} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Button, Text, View, StyleSheet, ScrollView,Modal,TextInput,Pressable,FlatList,TouchableOpacity} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {useValue} from './ValueStorageContext';
 import { Avatar } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import DatePicker from 'react-native-datepicker'
+import { Icon } from 'react-native-elements'
+
 
 import ProfileScreen from './Profile';
 import MealSearch from './meals';
@@ -17,28 +23,205 @@ import Timer from './Timer';
 // access the profile info from this page ...
 function HomeScreen({ navigation }) {
   const {currentValue,setCurrentValue} = useValue();
+  const [date, setDate] = useState("")
+  const [list,setList] = useState([]);
+  const [Item,setItem] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {getData()},[])
+
+  const getData = async () => {
+      try {
+        // the '@profile_info' can be any string
+        const jsonValue = await AsyncStorage.getItem('@memorydays')
+        let data = null
+        if (jsonValue!=null) {
+          data = JSON.parse(jsonValue)
+          setList(data)
+          console.log('just read existing list')
+        } else {
+          console.log('just read a null value from Storage')
+          setList([])
+          setItem("")
+        }
+      } catch(e) {
+        console.log("error in getData ")
+        console.dir(e)
+      }
+}
+
+const storeData = async (value) => {
+      try {
+        const jsonValue = JSON.stringify(value)
+        await AsyncStorage.setItem('@memorydays', jsonValue)
+        console.log('just stored '+jsonValue)
+      } catch (e) {
+        console.log("error in storeData ")
+        console.dir(e)
+        // saving error
+      }
+}
+
+const removeItem = async (item) => {
+  try {
+    const removename= item.Item
+    const jsonValue = await AsyncStorage.getItem('@memorydays')
+    var data = JSON.parse(jsonValue)
+    function RemoveNode(name) {
+      return data.filter(function(emp) {
+          if (emp.Item == name) {
+              return false;
+          }
+          return true;
+      });
+  }
+    var newData = RemoveNode(removename);
+    const newjs = JSON.stringify(newData)
+    await AsyncStorage.setItem('@memorydays', newjs)
+    setList(newData)
+    setItem("")
+  } catch (e) {
+    console.log("error in storeData ")
+    console.dir(e)
+    // saving error
+  }
+}
+
+  const renderItem = ({ item }) => {
+    return (
+    <View style={styles.member_item}>
+      <View style = {{alignSelf: 'stretch',alignItems: 'center',flexDirection: 'row',justifyContent:'space-between',marginHorizontal:10}}>
+        <Text style={{fontSize:20, fontWeight: 'bold',}}>{item.Item}</Text>
+        <TouchableOpacity
+            onPress={() => removeItem(item)}
+          >
+          <Icon
+            name="delete"
+            color="tomato"
+            size={20}
+        />
+        </TouchableOpacity>
+      </View>
+      <View style = {{alignSelf: 'stretch',alignItems: 'center', marginTop:3,  borderTopWidth: 2,borderRadius: 15,borderColor: 'powderblue',}}>
+        <View style = {{marginVertical:15}}>
+          <Text style={{fontSize:25}}>{moment(item.date).fromNow(true)}</Text>
+        </View>
+      </View>
+    </View>
+    
+    );
+  };
+
+
   return (
     <ScrollView style = {styles.wordbox}>
       <View style = {styles.title_badge}>
         <Text style = {{fontSize: 24, fontWeight: 'bold'}} > Welcome Back, {currentValue.name}!</Text>
       </View>
-      <View style = {{ paddingTop:10,paddingBottom:10, alignSelf: 'stretch', alignItems: 'center'}}>
-        <Avatar 
-          size = "xlarge"
-          rounded
-          source={{
-            uri:
-            currentValue.avatar,
-          }}
-        />
-      </View>
-      <View style = {styles.container}>
-        <Button
-            title="Edit Profile"
-            color = 'rgb(21, 52, 80)'
-            onPress={() => navigation.navigate('Profile')}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+          <Text style = {styles.member_title}>Add new event</Text>
+          <TextInput
+            style = {styles.input}
+            onChangeText={newText => setItem(newText)}
+            value={Item}
+            placeholder="Name of the Event">
+          </TextInput>
+          <DatePicker
+            style={{width: 200}}
+            date={date}
+            mode="date"
+            placeholder="select date"
+            format="YYYY-MM-DD"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                position: 'absolute',
+                left: 0,
+                top: 4,
+                marginLeft: 0
+              },
+              dateInput: {
+                marginLeft: 36
+              }
+            }}
+            onDateChange={(date) => {setDate(date)}}
           />
+          <View style = {{flexDirection:'row', justifyContent:'space-around', alignSelf:'stretch',paddingTop:20}}>
+            <Pressable
+              style={[styles.button]}
+              onPress={() =>{
+                const newItem =
+                  list.concat({'Item':Item, 'date':date})
+                  setList(newItem)
+                  storeData(newItem)
+                  setItem("")
+                  setModalVisible(!modalVisible)
+                }}
+            >
+              <Text style={styles.textStyle}>Confirm</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() =>
+                setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>Cancel</Text>
+            </Pressable>
+          </View>
+
+          </View>
+        </View>
+      </Modal>
+      <View style = {{ paddingTop:10,marginBottom:40, alignSelf: 'stretch', alignItems: 'center'}}>
+        <View style = {{flexDirection:'row', alignItems: 'flex-end'}}>
+          <Avatar 
+            size = "xlarge"
+            rounded
+            source={{
+              uri:
+              currentValue.avatar,
+            }}
+          />
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Profile')}
+          >
+            <Icon
+              name="build"
+              color="tomato"
+              size={20}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
+
+      <View style = {{flexDirection:'row'}}>
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+        >
+          <Icon
+            name="create"
+            color="tomato"
+            size={20}
+          />
+        </TouchableOpacity>
+        <Text style = {{  fontWeight: 'bold', fontSize: 16}}>Add new Event</Text>
+      </View> 
+      <FlatList
+        data = {list}
+        renderItem={renderItem}
+        keyExtractor={item => item.Item}
+      />
   </ScrollView>
   );
 }
@@ -48,14 +231,6 @@ function ServiceScreen({ navigation }) {
     <ScrollView style = {styles.wordbox}>
     <View style = {styles.title_badge}>
       <Text style = {{fontSize: 24, fontWeight: 'bold',}} > Select you desired service</Text>
-    </View>
-    <View style = {styles.container}>
-    <Button
-        title="Search for recepie"
-        backgroundColor = "floralwhite"
-        color = 'rgb(21, 52, 80)'
-        onPress={() => navigation.navigate('MealSearch')}
-      />
     </View>
     <View style = {styles.container}>
       <Button 
@@ -87,6 +262,14 @@ function ServiceScreen({ navigation }) {
         backgroundColor = "floralwhite"
         color = 'rgb(21, 52, 80)'
         onPress={() => navigation.navigate('Timer')}
+      />
+    </View>
+    <View style = {styles.container}>
+    <Button
+        title="Search for recepie"
+        backgroundColor = "floralwhite"
+        color = 'rgb(21, 52, 80)'
+        onPress={() => navigation.navigate('MealSearch')}
       />
     </View>
   </ScrollView>
@@ -222,9 +405,44 @@ const styles = StyleSheet.create({
   textAlign: 'justify',
   alignSlef: "center",
   },
-  member_title: {
-    fontSize: 14,
-    fontWeight: 'bold',
+centeredView: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: 22
+},
+modalView: {
+  margin: 20,
+  backgroundColor: "white",
+  borderRadius: 20,
+  padding: 35,
+  alignItems: "center",
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+  elevation: 5
+},
+member_item: {
+  padding: 10,
+  felx: 1,
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  marginVertical: 8,
+  marginHorizontal: 5,
+  borderWidth: 2,
+  borderRadius: 15,
+  borderColor: 'palevioletred',
+},
+member_title: {
+  fontSize: 24,
+  fontWeight: 'bold',
+},
+input: {
+  height: 50,
+  margin: 5,
 },
 });
-
