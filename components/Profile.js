@@ -5,7 +5,7 @@
 
 
 import React,{useState} from 'react';
-import {View,Text,TextInput,Button, StyleSheet, ScrollView} from 'react-native';
+import {View,Text,TextInput,Button, StyleSheet, ScrollView,Alert} from 'react-native';
 import {useValue} from './ValueStorageContext';
 
 const Profile = () => {
@@ -13,6 +13,18 @@ const Profile = () => {
     const [name,setName] = useState("Someone");
     const [avatar,setAvatar] = useState("https://media.istockphoto.com/vectors/cute-ghost-icon-silhouette-vector-id859891056?k=6&m=859891056&s=612x612&w=0&h=2_phi-weg0t0lJYULtwsaLBbQe8U57GaeVRKyqSO5Hw=");
     
+    const message = () =>
+      Alert.alert(
+      "",
+      "Profile Saved!",
+      [
+      {
+          text: "Okay",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+      },
+      ]
+  );
 
     return (
       <ScrollView style = {styles.wordbox}>
@@ -45,6 +57,7 @@ const Profile = () => {
               Color="#f194ff"
               onPress = {() => {
                 setCurrentValue({name,avatar});
+                
               }}
               />
       </ScrollView>

@@ -3,6 +3,7 @@ import React, { useState, useEffect }  from 'react';
 import { View, Button,FlatList, StyleSheet,Text, TextInput,ScrollView,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { Icon } from 'react-native-elements'
 
 
 const ShoppingList = () => {
@@ -52,6 +53,31 @@ const ShoppingList = () => {
         }
   }
 
+  const removeItem = async (item) => {
+    try {
+      const removename= item.task
+      const jsonValue = await AsyncStorage.getItem('@remind')
+      var data = JSON.parse(jsonValue)
+      function RemoveNode(name) {
+        return data.filter(function(emp) {
+            if (emp.task == name) {
+                return false;
+            }
+            return true;
+        });
+    }
+    var newData = RemoveNode(removename);
+    const newjs = JSON.stringify(newData)
+    await AsyncStorage.setItem('@remind', newjs)
+    setList(newData)
+    setItem("")
+    } catch (e) {
+      console.log("error in storeData ")
+      console.dir(e)
+      // saving error
+    }
+}
+
   const storeData = async (value) => {
         try {
           const jsonValue = JSON.stringify(value)
@@ -76,10 +102,33 @@ const ShoppingList = () => {
         }
   }
 
+  const Sorting = async () =>{
+    try {
+        var newItem = list
+        newItem.sort((firstItem, secondItem) => secondItem.priority - firstItem.priority)
+        setList(newItem)
+        const newjs = JSON.stringify(newItem)
+        await AsyncStorage.setItem('@remind', newjs)
+    } catch(e) {
+      console.log("error in clearData ")
+      console.dir(e)
+      // clear error
+    }
+  }
+
   const renderItem = ({ item }) => {
     return (
     <View style={conditional(item.priority)}>
       <Text style={{fontSize:16, fontWeight: 'bold',}}>{item.task}</Text>
+      <TouchableOpacity
+          onPress={() => removeItem(item)}
+        >
+        <Icon
+          name="delete"
+          color="black"
+          size={20}
+      />
+      </TouchableOpacity>
     </View>
     
     );
@@ -162,10 +211,7 @@ return(
                     title={"Save"}
                     color = '#D78873'
                     onPress = {() => {
-                        var newItem = list
-                        newItem.sort((firstItem, secondItem) => firstItem.priority - secondItem.priority)
-                        setList(newItem)
-                        storeData(newItem)
+                        Sorting()
                     }}
                 />
             </View>

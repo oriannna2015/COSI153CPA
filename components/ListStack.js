@@ -11,6 +11,7 @@ import MealSearch from './meals';
 import ShoppingList from './ShoppingList';
 import Reminders from './Reminders';
 import money from './money';
+import Timer from './Timer';
 
 // access the profile info from this page ...
 function HomeScreen({ navigation }) {
@@ -45,7 +46,7 @@ function ServiceScreen({ navigation }) {
   return (
     <ScrollView style = {styles.wordbox}>
     <View style = {styles.title_badge}>
-      <Text style = {{fontSize: 24, fontWeight: 'bold'}} > Select you desired service</Text>
+      <Text style = {{fontSize: 24, fontWeight: 'bold',}} > Select you desired service</Text>
     </View>
     <View style = {styles.container}>
     <Button
@@ -56,7 +57,7 @@ function ServiceScreen({ navigation }) {
       />
     </View>
     <View style = {styles.container}>
-      <Button
+      <Button 
         title="Shopping List"
         backgroundColor = "floralwhite"
         color = 'rgb(21, 52, 80)'
@@ -64,7 +65,7 @@ function ServiceScreen({ navigation }) {
       />
     </View>
     <View style = {styles.container}>
-      <Button
+      <Button 
         title="Reminders"
         backgroundColor = "floralwhite"
         color = 'rgb(21, 52, 80)'
@@ -72,11 +73,19 @@ function ServiceScreen({ navigation }) {
       />
     </View>
     <View style = {styles.container}>
-      <Button
-        title="money"
+      <Button 
+        title="Tally"
         backgroundColor = "floralwhite"
         color = 'rgb(21, 52, 80)'
         onPress={() => navigation.navigate('money')}
+      />
+    </View>
+    <View style = {styles.container}>
+      <Button
+        title="Timer"
+        backgroundColor = "floralwhite"
+        color = 'rgb(21, 52, 80)'
+        onPress={() => navigation.navigate('Timer')}
       />
     </View>
   </ScrollView>
@@ -111,6 +120,8 @@ function ServiceStackScreen() {
       />
       <ServiceStack.Screen name="money" component={money} 
       />
+      <ServiceStack.Screen name="Timer" component={Timer} 
+      />
     </ServiceStack.Navigator>
   );
 }
@@ -139,6 +150,9 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  baseText:{
+    fontFamily: "Kanit"
+  },
   container: {
     flexDirection:"row",
     backgroundColor: '#fff',
@@ -189,5 +203,9 @@ const styles = StyleSheet.create({
   textAlign: 'justify',
   alignSlef: "center",
   },
+  member_title: {
+    fontSize: 14,
+    fontWeight: 'bold',
+},
 });
 

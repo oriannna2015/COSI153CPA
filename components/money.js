@@ -3,7 +3,7 @@ import React, { useState, useEffect }  from 'react';
 import { View, Button,FlatList, StyleSheet,Text, TextInput,ScrollView,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
+import { Icon } from 'react-native-elements'
 
 const AccountBook = () => {
     const [list,setList] = useState([]);
@@ -48,6 +48,33 @@ const AccountBook = () => {
         }
   }
 
+  const removeItem = async (item) => {
+    try {
+      const removeamount= item.amount
+      const removenote= item.note
+      const removetype= item.type
+      const jsonValue = await AsyncStorage.getItem('@money')
+      var data = JSON.parse(jsonValue)
+      function RemoveNode(note,amount,type) {
+        return data.filter(function(emp) {
+            if (emp.amount == amount && emp.note == note && emp.type == type) {
+                return false;
+            }
+            return true;
+        });
+    }
+    var newData = RemoveNode(removenote, removeamount, removetype);
+    const newjs = JSON.stringify(newData)
+    await AsyncStorage.setItem('@money', newjs)
+    setList(newData)
+    setItem("")
+    } catch (e) {
+      console.log("error in storeData ")
+      console.dir(e)
+      // saving error
+    }
+}
+
   const storeData = async (value) => {
         try {
           const jsonValue = JSON.stringify(value)
@@ -77,11 +104,21 @@ const AccountBook = () => {
     <View style={conditional(item.type)}>
         <Text>{item.type}</Text>
       <Text style={{fontSize:16, fontWeight: 'bold',}}>{item.amount}</Text>
+      <TouchableOpacity
+          onPress={() => removeItem(item)}
+        >
+        <Icon
+          name="delete"
+          color="#fff"
+          size={20}
+      />
+      </TouchableOpacity>
     </View>
     );
   };
 
-  const calc = () => {
+  const calc = async  () => {
+    try {
         var totalamount = 0;
         var arrayLength = list.length;
     for (var i = 0; i < arrayLength; i++) {
@@ -94,6 +131,14 @@ const AccountBook = () => {
         
         }
     setTotal(totalamount)
+    const jsonValue = await AsyncStorage.getItem('@money')
+    await AsyncStorage.setItem('@money', jsonValue)
+      }
+      catch(e) {
+        console.log("error in clearData ")
+        console.dir(e)
+        // clear error
+      }
   };
 
 
@@ -178,7 +223,7 @@ return(
                     }}
                 />
                 <Button
-                    title={"Update Total"}
+                    title={"Get Total"}
                     color = '#D78873'
                     onPress = {() => {
                         calc()

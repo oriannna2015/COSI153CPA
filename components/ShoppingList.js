@@ -2,6 +2,7 @@ import React, { useState, useEffect }  from 'react';
 
 import { View, Button,FlatList, StyleSheet,Text, TextInput,ScrollView,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Icon } from 'react-native-elements'
 
 
 const ShoppingList = () => {
@@ -41,7 +42,31 @@ const ShoppingList = () => {
           // saving error
         }
   }
-
+  
+  const removeItem = async (item) => {
+    try {
+      const removename= item.Item
+      const jsonValue = await AsyncStorage.getItem('@sp')
+      var data = JSON.parse(jsonValue)
+      function RemoveNode(name) {
+        return data.filter(function(emp) {
+            if (emp.Item == name) {
+                return false;
+            }
+            return true;
+        });
+    }
+      var newData = RemoveNode(removename);
+      const newjs = JSON.stringify(newData)
+      await AsyncStorage.setItem('@sp', newjs)
+      setList(newData)
+      setItem("")
+    } catch (e) {
+      console.log("error in storeData ")
+      console.dir(e)
+      // saving error
+    }
+}
 
   const clearAll = async () => {
         try {
@@ -58,6 +83,15 @@ const ShoppingList = () => {
     return (
     <View style={styles.member_item}>
       <Text style={{fontSize:16, fontWeight: 'bold',}}>{item.Item}</Text>
+      <TouchableOpacity
+          onPress={() => removeItem(item)}
+        >
+        <Icon
+          name="delete"
+          color="tomato"
+          size={20}
+      />
+      </TouchableOpacity>
     </View>
     
     );
@@ -93,7 +127,7 @@ return(
             />
             <View style = {{flexDirection: 'row', alignItems: 'center',alignSelf: 'center'}}>
                 <Button
-                title={"Add Item"}
+                title="Add Item"
                 color = '#628FA6'
                 onPress = {() => 
                 {
@@ -105,7 +139,7 @@ return(
                 }}
                 />
                 <Button
-                    title={"Clear List"}
+                    title="Clear List"
                     color = '#D78873'
                     onPress = {() => {
                         clearAll()
@@ -193,3 +227,4 @@ const styles = StyleSheet.create({
 });
 
   export default ShoppingList; 
+
