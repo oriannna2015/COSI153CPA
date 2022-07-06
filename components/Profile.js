@@ -30,7 +30,7 @@ const Profile = () => {
       <ScrollView style = {styles.wordbox}>
         <View style = {styles.title_badge}>
           <Text style = {{fontSize: 24, fontWeight: 'bold'}} > Login as:</Text>
-          <Text style = {{fontSize: 18, fontWeight: 'bold'}} > {name}</Text>
+          <Text style = {{fontSize: 18, fontWeight: 'bold'}} > {currentValue.name}</Text>
         </View>
         <View style = {styles.container}>
           <View style={{flexDirection: 'column', alignSelf: 'stretch'}}>
@@ -57,7 +57,8 @@ const Profile = () => {
               Color="#f194ff"
               onPress = {() => {
                 setCurrentValue({name,avatar});
-                
+                console.log(JSON.stringify(currentValue))
+                message();
               }}
               />
       </ScrollView>

@@ -4,8 +4,10 @@ import { View, Button,FlatList, StyleSheet,Text, TextInput,ScrollView,TouchableO
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Icon } from 'react-native-elements'
+import {useValue} from './ValueStorageContext';
 
 const AccountBook = () => {
+    const {currentValue,setCurrentValue} = useValue();
     const [list,setList] = useState([]);
     const [Item,setItem] = useState("");
     const [note,setNote] = useState("");

@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {useValue} from './ValueStorageContext';
 import { Avatar } from 'react-native-elements';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ProfileScreen from './Profile';
 import MealSearch from './meals';
@@ -131,7 +132,25 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = 'person'
+            } else if (route.name === 'Service') {
+              iconName ="bookmarks";
+            } else if (route.name === 'Profile') {
+              iconName ='build';
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
+        })}>
         <Tab.Screen name="Home" component={HomeStackScreen} 
           options={{
             headerShown: false
