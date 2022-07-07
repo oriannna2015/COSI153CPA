@@ -1,3 +1,10 @@
+For classmates from COSI 153:
+Here are some packages i use that you might be intereted in:
+https://github.com/web-ridge/react-native-paper-dates
+https://www.npmjs.com/package/react-native-countdown-circle-timer
+https://reactnativeelements.com/docs/1.2.0/icon#iconstyle
+
+
 This Mobile app serves as a personal app that helps the user for for daily planning
 Features:
 - Runs on local basis: all access and saving are done on asyncsyorage
