@@ -168,18 +168,21 @@ return(
         <Text style = {{alignSelf: 'center'}}> Record your income/cost</Text>
         <View style = {styles.wordbox}>
             <Text style = {{fontSize:16,fontWeight:'bold', alignSelf: 'flex-start', marginLeft: 20, padding:10}}>Add new record</Text>
+              <Text>Cost:</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={newText => setItem(newText)}
                 value={Item}
                 placeholder="Enter new Cost"
             />
-            <TextInput
+              <Text>Note:</Text>
+              <TextInput
                 style={styles.input}
                 onChangeText={newText => setNote(newText)}
                 value={note}
-                placeholder="notes for the cost"
+                placeholder="Notes for the cost"
             />
+
             <DropDownPicker
                 label = "MoneyType"
                 open={open}

@@ -9,7 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import DatePicker from 'react-native-datepicker'
+import { DatePickerModal } from 'react-native-paper-dates';
 import { Icon } from 'react-native-elements'
 
 
@@ -23,10 +23,11 @@ import Timer from './Timer';
 // access the profile info from this page ...
 function HomeScreen({ navigation }) {
   const {currentValue,setCurrentValue} = useValue();
-  const [date, setDate] = useState("")
+  const [date, setDate] = useState(new Date())
   const [list,setList] = useState([]);
   const [Item,setItem] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [open, setOpen] = useState(true);
 
   useEffect(() => {getData()},[])
 
@@ -49,6 +50,7 @@ function HomeScreen({ navigation }) {
         console.dir(e)
       }
 }
+
 
 const storeData = async (value) => {
       try {
@@ -112,6 +114,22 @@ const removeItem = async (item) => {
     );
   };
 
+const onDismissSingle = React.useCallback(() => {
+  setOpen(false);
+}, [setOpen]);
+
+const openmodal = () => {
+  setOpen(true)
+  setModalVisible(true)
+}
+
+const onConfirmSingle = React.useCallback(
+  (params) => {
+    setOpen(false);
+    setDate(params.date);
+  },
+  [setOpen, setDate]
+);
 
   return (
     <ScrollView style = {styles.wordbox}>
@@ -136,27 +154,15 @@ const removeItem = async (item) => {
             value={Item}
             placeholder="Name of the Event">
           </TextInput>
-          <DatePicker
-            style={{width: 200}}
+          <DatePickerModal
+            locale="en"
+            mode="single"
+            visible={open}
+            onDismiss={onDismissSingle}
             date={date}
-            mode="date"
-            placeholder="select date"
-            format="YYYY-MM-DD"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                left: 0,
-                top: 4,
-                marginLeft: 0
-              },
-              dateInput: {
-                marginLeft: 36
-              }
-            }}
-            onDateChange={(date) => {setDate(date)}}
+            onConfirm={onConfirmSingle}
           />
+         
           <View style = {{flexDirection:'row', justifyContent:'space-around', alignSelf:'stretch',paddingTop:20}}>
             <Pressable
               style={[styles.button]}
@@ -207,7 +213,7 @@ const removeItem = async (item) => {
 
       <View style = {{flexDirection:'row'}}>
         <TouchableOpacity
-          onPress={() => setModalVisible(true)}
+          onPress={() => {openmodal()}}
         >
           <Icon
             name="create"
