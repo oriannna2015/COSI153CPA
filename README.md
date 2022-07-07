@@ -1,7 +1,9 @@
 For classmates from COSI 153:
 Here are some packages i use that you might be intereted in:
 https://github.com/web-ridge/react-native-paper-dates
+
 https://www.npmjs.com/package/react-native-countdown-circle-timer
+
 https://reactnativeelements.com/docs/1.2.0/icon#iconstyle
 
 
